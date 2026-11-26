@@ -10,17 +10,28 @@ export default function Dashboard() {
   const [tasks, setTasks] = useState([])
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const dateLabel = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()
 
   useEffect(() => {
     Promise.all([api.getTasks(), api.getProjects()])
       .then(([taskData, projectData]) => { setTasks(taskData); setProjects(projectData) })
+      .catch(() => setError('We could not load dashboard data. Check that the API is running.'))
       .finally(() => setLoading(false))
   }, [])
 
   const completed = tasks.filter((task) => task.status === 'Done').length
   const inProgress = tasks.filter((task) => task.status === 'In progress').length
   const completion = tasks.length ? Math.round((completed / tasks.length) * 100) : 0
+
+  if (error) {
+    return (
+      <div className="page-content">
+        <SectionHeading eyebrow={dateLabel} title="Good morning, Dana ✨" description="Here's what's happening across your workspace today." action="New task" to="/tasks/new" />
+        <div className="form-error" role="alert">{error}</div>
+      </div>
+    )
+  }
 
   return (
     <div className="page-content">
