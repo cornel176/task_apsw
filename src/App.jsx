@@ -12,6 +12,7 @@ import { api } from './api'
 export default function App() {
   const [projects, setProjects] = useState([])
   const [apiError, setApiError] = useState(false)
+  const todayLabel = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 
   useEffect(() => {
     api.getProjects().then(setProjects).catch(() => setApiError(true))
@@ -72,7 +73,7 @@ export default function App() {
         {apiError && <div className="api-warning">Could not connect to the local API. Start it with <code>npm run api</code>.</div>}
         <header className="topbar">
           <div className="breadcrumbs"><span>Workspace</span><span className="crumb-slash">/</span><strong>My workspace</strong></div>
-          <div className="topbar-actions"><span className="today-label">Thursday, October 15</span><div className="top-avatar">DP</div></div>
+          <div className="topbar-actions"><span className="today-label">{todayLabel}</span><div className="top-avatar">DP</div></div>
         </header>
         <div className="page-wrap">
           <Routes>
